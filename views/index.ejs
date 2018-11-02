@@ -6,12 +6,16 @@
 		<title>Check the T | Arrival times for your T station or stop</title>
 		<meta name="description" content="Better plan for your trips by checking when the next train or bus will arrive at your T stop.">
 		<meta name="author" content="Tom Tillistrand">
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 		<link rel="stylesheet" href="/css/stylesheet.css" type="text/css">
 	</head>
-	<body>
+	<body class="home">
 		<div class="wrapper">
 			<header>
-				<div class="logo">Check The T</div>
+				<div class="logo">
+					<h1 class="hide">Check the T</h1>
+					<a href="#"><img src="/imgs/check-the-t.svg"></a>
+				</div>
 				<nav>
 					<ul>
 						<li><a href="#">About</a></li>
@@ -20,7 +24,15 @@
 				</nav>
 			</header>
 			<main>
-				
+				<section class="main-content-wrapper">
+					<h2>Check the arrival times for your T stop</h2>
+					<form>
+							<h3>Enter Your Station</h3>
+							<label for="station-name" class="hide">Station Name</label>
+							<input type="text" name="station-name" placeholder="Ex: South Station">
+							<input type="submit" value="Get Times">
+					</form>
+				</section>
 			</main>
 		</div>
 	</body>

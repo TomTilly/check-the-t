@@ -41,9 +41,114 @@ body {
 	background: linear-gradient(rgba(0, 0, 0, 0.5), 
       rgba(0, 0, 0, 0.5)), url('../imgs/lance-anderson-393963-unsplash.jpg');
 	background-size: cover;
+	font-size: 1.125em; /* Equals 18px if user's default font is 16px */
+	font-family: 'Open Sans', sans-serif;
 }
 
 .wrapper {
 	display: flex;
+	width: 90%;
+	max-width: 1000px;
+	margin: 0 auto;
+	min-height: 100%;
+	flex-flow: column;
 }
 
+.home {
+	color: white;
+}
+
+.hide {
+	position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+
+/* Header */
+
+header {
+	padding: 1em;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	flex-wrap: wrap;
+}
+
+.logo {
+	flex-basis: 200px;
+}
+
+.logo a {
+	opacity: 0.8;
+	transition: opacity .2s linear;
+}
+
+nav ul {
+	padding: 0;
+	list-style-type: none;
+	display: flex;
+	font-size: 1.25em;
+}
+
+nav ul a {
+	color: #FFFFFF;
+	opacity: 0.8;
+	text-decoration: none;
+	transition: opacity .2s linear;
+}
+
+header a:hover {
+	opacity: 1;
+}
+
+nav ul li:first-of-type {
+	margin-right: 2em;
+}
+
+/* Main Content Area */
+
+main {
+	flex-grow: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.main-content-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-flow: column;
+	margin-top: -200px;
+}
+
+.home main {
+	text-align: center;
+}
+
+.home h2 {
+	font-size: 3em;
+	margin: 0;
+}
+
+.home h3 {
+	font-size: 1.25em;
+	margin: 1em 0 .7em;
+}
+
+.home input {
+	padding: .8em 1em;
+	border-radius: 4px;
+	font-size: 1.25em;
+}
+
+.home input[type="text"] {
+	border: none;
+}
+
+.home input[type="submit"]{
+	background: #f15273;
+	border: 0;
+	margin-left: .2em;
+}
