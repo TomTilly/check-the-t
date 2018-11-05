@@ -1,14 +1,17 @@
 <%- include('partials/header', {currentPage: 'arrivals'}) %>
 			<main>
-				<section class="main-content-wrapper">
-					<h2>Check the arrival times for your T stop</h2>
-					<form action="/arrivals" method="get">
-							<h3>Enter Your Station</h3>
-							<label for="station-name" class="hide">Station Name</label>
-							<input type="text" name="station-name" placeholder="Ex: South Station">
-							<input type="submit" value="Get Times">
-					</form>
-				</section>
+				<div class="main-content-wrapper">
+					<section class="stop-info">
+						<h1 class="stop-name">Stop Name</h1>
+						<ul>
+							<li>Stop 1</li>
+							<li>Stop 2</li>
+							<li>Stop 3</li>
+							<li>Stop 4</li>
+							<li>Stop 5</li>
+						</ul>
+					</section>
+				</div>
 			</main>
 		</div>
 	</body>

@@ -1,6 +1,6 @@
 <%- include('partials/header', {currentPage: 'home'}) %>
 			<main>
-				<section class="main-content-wrapper">
+				<div class="main-content-wrapper">
 					<h2>Check the arrival times for your T stop</h2>
 					<form action="/arrivals" method="get">
 							<h3>Enter Your Station</h3>
@@ -8,7 +8,7 @@
 							<input type="text" name="station-name" placeholder="Ex: South Station">
 							<input type="submit" value="Get Times">
 					</form>
-				</section>
+				</div>
 			</main>
 		</div>
 	</body>

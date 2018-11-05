@@ -42,7 +42,7 @@ body {
 	font-family: 'Open Sans', sans-serif;
 }
 
-.home .wrapper {
+.wrapper {
 	background: linear-gradient(rgba(0, 0, 0, 0.5), 
       rgba(0, 0, 0, 0.5)), url('../imgs/lance-anderson-393963-unsplash.jpg');
 	background-size: cover;
@@ -110,10 +110,6 @@ nav ul li:first-of-type {
 	margin-right: 2em;
 }
 
-.arrivals header {
-	background: #155C96;
-}
-
 /* Main Content Area */
 
 main {
@@ -132,7 +128,6 @@ main {
 	align-items: center;
 	flex-flow: column;
 	margin-top: -200px;
-	
 }
 
 .home main {
@@ -169,4 +164,17 @@ main {
 	width: 90%;
 	max-width: 1100px;
 	margin: 0 auto;
+}
+
+.stop-info {
+	background: rgba(0, 0, 0, .3);
+	color: rgba(255,255,255,0.8);
+	width: 50%;
+}
+
+.stop-name {
+	background: #DA271C;
+	font-size: 1.5em;
+	padding: .5em;
+	
 }
