@@ -9,9 +9,11 @@
   "author": "Tom Tillistrand",
   "license": "ISC",
   "dependencies": {
-    "browser-sync": "^2.26.3",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.26.3"
   }
 }

@@ -38,20 +38,33 @@ html, body {
 }
 
 body {
-	background: linear-gradient(rgba(0, 0, 0, 0.5), 
-      rgba(0, 0, 0, 0.5)), url('../imgs/lance-anderson-393963-unsplash.jpg');
-	background-size: cover;
 	font-size: 1.125em; /* Equals 18px if user's default font is 16px */
 	font-family: 'Open Sans', sans-serif;
 }
 
+.home .wrapper {
+	background: linear-gradient(rgba(0, 0, 0, 0.5), 
+      rgba(0, 0, 0, 0.5)), url('../imgs/lance-anderson-393963-unsplash.jpg');
+	background-size: cover;
+}
+
 .wrapper {
 	display: flex;
-	width: 90%;
-	max-width: 1000px;
 	margin: 0 auto;
 	min-height: 100%;
 	flex-flow: column;
+}
+
+.header-content-wrapper {
+	width: 90%;
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 1em;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	flex-wrap: wrap;
 }
 
 .home {
@@ -65,15 +78,6 @@ body {
 }
 
 /* Header */
-
-header {
-	padding: 1em;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
-	flex-wrap: wrap;
-}
 
 .logo {
 	flex-basis: 200px;
@@ -106,21 +110,29 @@ nav ul li:first-of-type {
 	margin-right: 2em;
 }
 
+.arrivals header {
+	background: #155C96;
+}
+
 /* Main Content Area */
 
 main {
 	flex-grow: 1;
+}
+
+.home main {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-.main-content-wrapper {
+.home .main-content-wrapper {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-flow: column;
 	margin-top: -200px;
+	
 }
 
 .home main {
@@ -151,4 +163,10 @@ main {
 	background: #f15273;
 	border: 0;
 	margin-left: .2em;
+}
+
+.arrivals .main-content-wrapper {
+	width: 90%;
+	max-width: 1100px;
+	margin: 0 auto;
 }

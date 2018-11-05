@@ -8,7 +8,11 @@ app.use(express.static('public'));
 /* Routes */
 
 app.get('/', function(req, res) {
-	res.render('index');
+	res.render('index', {currentPage: 'home'});
+});
+
+app.get('/arrivals', function(req, res) {
+	res.render('arrivals');
 });
 
 app.listen(port, function(){
