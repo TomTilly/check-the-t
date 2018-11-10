@@ -8,11 +8,15 @@ app.use(express.static('public'));
 /* Routes */
 
 app.get('/', function(req, res) {
-	res.render('index', {currentPage: 'home'});
+	res.render('index');
 });
 
 app.get('/arrivals', function(req, res) {
 	res.render('arrivals');
+});
+
+app.get('*', function(req, res) {
+	res.send('Resource not found');
 });
 
 app.listen(port, function(){
