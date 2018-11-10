@@ -23,7 +23,11 @@ button,hr,input{overflow:visible}progress,sub,sup{vertical-align:baseline}[type=
 
 */
 
-/* Global Styles */
+/*
+=================
+Global Styles
+=================
+*/
 
 html {
   box-sizing: border-box;
@@ -77,7 +81,11 @@ body {
   left: -9999px;
 }
 
-/* Header */
+/*
+=================
+Header
+=================
+*/
 
 .logo {
 	flex-basis: 200px;
@@ -110,19 +118,25 @@ nav ul li:first-of-type {
 	margin-right: 2em;
 }
 
-/* Main Content Area */
+/*
+=================
+Main Content Area
+=================
+*/
+
+/* Home Page (and some styles for 404 page) */
 
 main {
 	flex-grow: 1;
 }
 
-.home main {
+.home main, .not-found main {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-.home .main-content-wrapper {
+.home .main-content-wrapper, .not-found .main-content-wrapper {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -130,8 +144,13 @@ main {
 	margin-top: -200px;
 }
 
-.home main {
+.home main, .not-found main {
 	text-align: center;
+}
+
+.not-found .main-content-wrapper {
+	color: white;
+	font-size: 2em;
 }
 
 .home h2 {
@@ -159,6 +178,9 @@ main {
 	border: 0;
 	margin-left: .2em;
 }
+
+
+/* Arrival Page */
 
 .arrivals .main-content-wrapper {
 	width: 90%;

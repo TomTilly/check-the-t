@@ -16,7 +16,7 @@ app.get('/arrivals', function(req, res) {
 });
 
 app.get('*', function(req, res) {
-	res.send('Resource not found');
+	res.render('404');
 });
 
 app.listen(port, function(){
