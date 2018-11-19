@@ -1,23 +1,12 @@
+<%- include('partials/header', {currentPage: 'arrivals', stationFound: stationFound}) %>
+
 <% if(stationFound) { %>
-<%- include('partials/header', {currentPage: 'arrivals'}) %>
-<% } else { %>
-<%- include('partials/header', {currentPage: 'page-not-found'}) %>
-<% } %>
-			<main>
-				<div class="main-content-wrapper">
-					<div class="no-stations-container">
-						<h1>Couldn't find STATION NAME. Please try again.</h1>
-						<form action="/arrivals" method="get">
-							<h3>Enter Your Station</h3>
-							<label for="station-name" class="hide">Station Name</label>
-							<input type="text" name="station-name" placeholder="Ex: South Station">
-							<input type="submit" value="Get Times">
-						</form>
-					</div>
+				<main>
+
 					<!-- Bus -->
-					<section class="stop-info">
+					<section class="stop-container">
 						<h1 class="route-name bus-stop">
-							<span class="stop-number">88</span>
+							<span class="stop-num">88</span>
 							<span>Clarendon Hill - Lechmere via Highland Avenue</span>
 						</h1>
 						<h2 class="direction">Inbound → Lechmere</h2>
@@ -35,7 +24,7 @@
 					</section>
 
 					<!-- Subway -->
-					<section class="stop-info">
+					<section class="stop-container">
 						<h1 class="route-name red-line">
 							<img alt="MBTA T Logo" class="T-logo" src="imgs/T-logo-w-transparent-bk.svg">
 							<span>Red Line</span>
@@ -53,8 +42,19 @@
 							<li><span class="arrival-time">15 min</span><span>Porter Sq.</span></li>
 						</ul>
 					</section>
-				</div>
-			</main>
-		</div>
+				</main>
+<% } else { %>
+				<main class="flex-and-center reverse-top-margin">
+					<p class="h1-like center-horizontal">Couldn't find "<%= stationName %>". Please try again.</p>
+					<form action="/arrivals" method="get">
+						<h2 class="form-title">Enter Your Station</h2>
+						<label for="station-name" class="hide">Station Name</label>
+						<input type="text" name="station-name" placeholder="Ex: South Station">
+						<input type="submit" value="Get Times">
+					</form>
+				</main>
+<% } %>
+					
+			
 	</body>
 </html>

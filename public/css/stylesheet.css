@@ -23,6 +23,7 @@ button,hr,input{overflow:visible}progress,sub,sup{vertical-align:baseline}[type=
 */
 
 
+
 /* ==========================================================================
    Global Styles
    ========================================================================== */
@@ -71,8 +72,17 @@ body {
 	margin-top: -200px;
 }
 
-.h1-like { /* elements that aren't semantically h1s but are styled similarly */
+h1, .h1-like { /* .h1-like are not semantically h1s but are styled the same */
 	font-size: 3em;
+	margin-bottom: .5em;
+}
+
+h2 {
+	font-size: 2.25em;
+}
+
+.center-horizontal {
+	text-align: center;
 }
 
 
@@ -99,9 +109,9 @@ header {
 
 nav ul {
 	display: flex;
+	list-style-type: none;
 	padding: 0;
 	font-size: 1.25em;
-	list-style-type: none;
 }
 
 nav ul a {
@@ -129,74 +139,83 @@ main {
 
 main.flex-and-center {
 	display: flex;
+	flex-flow: column;
 	justify-content: center;
 	align-items: center;
-	flex-flow: column;
 }
 
-.home h2 {
-	font-size: 3em;
-	margin: 0;
+
+
+/* ==========================================================================
+   Page/Section Specific Styles
+   ========================================================================== */
+
+
+/* Home Page
+   ========================================================================== */
+
+.home main {
+	text-align: center;
 }
 
-.home h3 {
-	font-size: 1.25em;
-	margin: 1em 0 .7em;
+
+
+
+/* Enter Stop Form
+   ========================================================================== */
+
+.form-title {
+	font-size: 1.5em;
+	text-align: center;
 }
 
-.home input {
+input {
 	padding: .8em 1em;
 	border-radius: 4px;
 	font-size: 1.25em;
 }
 
-.home input[type="text"] {
+input[type="text"] {
 	border: none;
 }
 
-.home input[type="submit"]{
+input[type="submit"]{
+	margin-left: .2em;
 	background: #f15273;
 	border: 0;
-	margin-left: .2em;
 }
 
 
-/* Arrival Page */
+/* Arrivals Page
+   ========================================================================== */
 
-.arrivals .main-content-wrapper {
-	width: 90%;
-	max-width: 1100px;
-	margin: 0 auto;
-}
-
-.stop-info {
-	background: rgba(0, 0, 0, 0.8);
-	color: rgba(255,255,255);
+.stop-container {
 	width: 50%;
 	margin-bottom: 70px;
+	background: rgba(0, 0, 0, 0.8);
+	color: rgba(255,255,255);
 	border-radius: 1rem;
 }
 
-
 .route-name {
-	font-size: 1.5em;
-	padding: 1em;
-	border-bottom: 5px solid white;
 	display: flex;
 	align-items: center;
+	padding: 1em;
 	margin: 0;
+	font-size: 1.5em;
+	border-bottom: 5px solid white;
 	border-top-left-radius: 1rem;
 	border-top-right-radius: 1rem;
 }
 
 .bus-stop {
-	background-color: #FFC72C;
 	color: #000000;
+	background-color: #FFC72C;
 }
 
 .red-line {
-	background-color: #DA291C;
 	color: #FFFFFF;
+	background-color: #DA291C;
 }
 
 .T-logo {
@@ -205,54 +224,50 @@ main.flex-and-center {
 	margin-right: .5em;
 }
 
-.stop-number {
+.stop-num {
+	padding: .25em .4em;
+	margin-right: .5em;
 	font-size: 1.2em;
 	background: black;
-	padding: .25em .4em;
 	border-radius: 1em;
-	color: white;
+	color: #FFF;
 	letter-spacing: .02em;
-	margin-right: .5em;
 }
 
-.short {
+.single-num {
 	padding: .1em .5em;
 }
 
 .direction {
-	font-size: 1.4em;
+	padding: 1em;
+	margin: 0;
 	text-align: center;
+	font-size: 1.4em;
 	font-weight: bold;
 	color: white;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-	padding: 1em;
-	margin: 0;
 }
 
-.stop-info ul {
-	list-style-type: none;
-	margin: 0;
+.stop-container ul {
 	padding: 0;
+	margin: 0;
 	font-size: 1.2em;
+	list-style-type: none;
 }
 
-.stop-info li {
+.stop-container li {
+	display: flex;
 	padding: .5em 2em;
 	color: rgba(255, 255, 255, 0.8);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-	display: flex;
 }
 
-.stop-info ul:last-of-type li:last-of-type {
+.stop-container ul:last-of-type li:last-of-type {
 	border-bottom: none;
 }
 
 .arrival-time {
+	flex-basis: 20%;
 	margin-right: 1em;
 	color: white;
-	flex-basis: 20%;
 }
-
-/* ==========================================================================
-Page Specific Styles
-========================================================================== */

@@ -121,9 +121,9 @@ app.get('/arrivals', function(req, res) {
 		console.log('error:', error);
 		console.log('statusCode:', reponse && reponse.statusCode);
 		}
+		console.log("stationFound: " + stationFound);
+		res.render('arrivals', {routePredictions: routePredictions, stationName: stationName, stationFound: stationFound});
 	});
-
-	res.render('arrivals', {routePredictions: routePredictions, stationName: stationName, stationFound: stationFound});
 });
 
 app.get('*', function(req, res) {
