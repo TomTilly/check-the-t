@@ -1,0 +1,9 @@
+<% routePredictions.forEach(function(routePrediction) { %>
+	<h1 class="route-name <%= prediction.routeType %>">
+	<% if(prediction.routeType == "Subway") { %>
+		<img alt="MBTA T Logo" class="T-logo" src="imgs/T-logo-w-transparent-bk.svg">
+	<% } else { %>
+	<span class="stop-number"><%= prediction.busNum %></span>
+	<% } %>
+	<span><%= prediction.stopName %></span>
+}) %>

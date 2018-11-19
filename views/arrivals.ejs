@@ -1,14 +1,56 @@
+<% if(stationFound) { %>
 <%- include('partials/header', {currentPage: 'arrivals'}) %>
+<% } else { %>
+<%- include('partials/header', {currentPage: 'not-found'}) %>
+<% } %>
 			<main>
 				<div class="main-content-wrapper">
+					<div class="no-stations-container">
+						<h1>Couldn't find STATION NAME. Please try again.</h1>
+						<form action="/arrivals" method="get">
+							<h3>Enter Your Station</h3>
+							<label for="station-name" class="hide">Station Name</label>
+							<input type="text" name="station-name" placeholder="Ex: South Station">
+							<input type="submit" value="Get Times">
+						</form>
+					</div>
+					<!-- Bus -->
 					<section class="stop-info">
-						<h1 class="stop-name">Stop Name</h1>
+						<h1 class="route-name bus-stop">
+							<span class="stop-number">88</span>
+							<span>Clarendon Hill - Lechmere via Highland Avenue</span>
+						</h1>
+						<h2 class="direction">Inbound → Lechmere</h2>
 						<ul>
-							<li>Stop 1</li>
-							<li>Stop 2</li>
-							<li>Stop 3</li>
-							<li>Stop 4</li>
-							<li>Stop 5</li>
+							<li><span class="arrival-time">1 min</span><span>Highland Ave @ Vinal Ave</span></li>
+							<li><span class="arrival-time">21 min</span><span>Highland Ave @ Vinal Ave</span></li>
+							<li><span class="arrival-time">39 min</span><span>Highland Ave @ Vinal Ave</span></li>
+						</ul>
+						<h3 class="direction">Outbound → Clarendon Hill</h3>
+						<ul>
+							<li><span class="arrival-time">8 min</span><span>Highland Ave @ Vinal Ave</span></li>
+							<li><span class="arrival-time">29 min</span><span>Highland Ave @ Vinal Ave</span></li>
+							<li><span class="arrival-time">42 min</span><span>Highland Ave @ Vinal Ave</span></li>
+						</ul>
+					</section>
+
+					<!-- Subway -->
+					<section class="stop-info">
+						<h1 class="route-name red-line">
+							<img alt="MBTA T Logo" class="T-logo" src="imgs/T-logo-w-transparent-bk.svg">
+							<span>Red Line</span>
+						</h1>
+						<h2 class="direction">Southbound → Braintree/Ashmont</h2>
+						<ul>
+							<li><span class="arrival-time">2 min</span><span>Porter Sq. (to Braintree)</span></li>
+							<li><span class="arrival-time">5 min</span><span>Porter Sq. (to Ashmont)</span></li>
+							<li><span class="arrival-time">7 min</span><span>Porter Sq. (to Braintree)</span></li>
+						</ul>
+						<h2 class="direction">Northbound → Alewife</h2>
+						<ul>
+							<li><span class="arrival-time">3 min</span><span>Porter Sq.</span></li>
+							<li><span class="arrival-time">9 min</span><span>Porter Sq.</span></li>
+							<li><span class="arrival-time">15 min</span><span>Porter Sq.</span></li>
 						</ul>
 					</section>
 				</div>

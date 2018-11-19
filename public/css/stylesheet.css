@@ -29,6 +29,8 @@ Global Styles
 =================
 */
 
+
+
 html {
   box-sizing: border-box;
 }
@@ -48,8 +50,9 @@ body {
 
 .wrapper {
 	background: linear-gradient(rgba(0, 0, 0, 0.5), 
-      rgba(0, 0, 0, 0.5)), url('../imgs/lance-anderson-393963-unsplash.jpg');
+      rgba(0, 0, 0, 0.5)), url('../imgs/lance-anderson-393963-unsplash-min.jpg');
 	background-size: cover;
+	background-attachment: fixed;
 }
 
 .wrapper {
@@ -57,22 +60,6 @@ body {
 	margin: 0 auto;
 	min-height: 100%;
 	flex-flow: column;
-}
-
-.header-content-wrapper {
-	width: 90%;
-	max-width: 1100px;
-	margin: 0 auto;
-	padding: 1em;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
-	flex-wrap: wrap;
-}
-
-.home {
-	color: white;
 }
 
 .hide {
@@ -86,6 +73,18 @@ body {
 Header
 =================
 */
+
+.header-content-wrapper {
+	width: 90%;
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 1em;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	flex-wrap: wrap;
+}
 
 .logo {
 	flex-basis: 200px;
@@ -125,6 +124,10 @@ Main Content Area
 */
 
 /* Home Page (and some styles for 404 page) */
+
+.home {
+	color: white;
+}
 
 main {
 	flex-grow: 1;
@@ -189,14 +192,85 @@ main {
 }
 
 .stop-info {
-	background: rgba(0, 0, 0, .3);
-	color: rgba(255,255,255,0.8);
+	background: rgba(0, 0, 0, .8);
+	color: rgba(255,255,255);
 	width: 50%;
+	margin-bottom: 70px;
+	border-radius: 1rem;
 }
 
-.stop-name {
-	background: #DA271C;
+
+.route-name {
 	font-size: 1.5em;
-	padding: .5em;
-	
+	padding: 1em;
+	border-bottom: 5px solid white;
+	display: flex;
+	align-items: center;
+	margin: 0;
+	border-top-left-radius: 1rem;
+	border-top-right-radius: 1rem;
+}
+
+.bus-stop {
+	background-color: #FFC72C;
+	color: #000000;
+}
+
+.red-line {
+	background-color: #DA291C;
+	color: #FFFFFF;
+}
+
+.T-logo {
+	width: 2em;
+	height: 2em;
+	margin-right: .5em;
+}
+
+.stop-number {
+	font-size: 1.2em;
+	background: black;
+	padding: .25em .4em;
+	border-radius: 1em;
+	color: white;
+	letter-spacing: .02em;
+	margin-right: .5em;
+}
+
+.short {
+	padding: .1em .5em;
+}
+
+.direction {
+	font-size: 1.4em;
+	text-align: center;
+	font-weight: bold;
+	color: white;
+	border-bottom: 1px solid rgba(255,255,255,0.8);
+	padding: 1em;
+	margin: 0;
+}
+
+.stop-info ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	font-size: 1.2em;
+}
+
+.stop-info li {
+	padding: .5em 2em;
+	color: rgba(255,255,255,0.8);
+	border-bottom: 1px solid rgba(255,255,255,0.8);
+	display: flex;
+}
+
+.stop-info ul:last-of-type li:last-of-type {
+	border-bottom: none;
+}
+
+.arrival-time {
+	margin-right: 1em;
+	color: white;
+	flex-basis: 20%;
 }
