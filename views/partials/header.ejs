@@ -6,9 +6,9 @@
 		<title>
 		<% if(currentPage === 'home') { %>
 			Check the T | MBTA Subway/Bus Arrival Times
-		<% } else if(currentPage === 'arrivals' && stationFound) { %>
+		<% } else if(currentPage === 'arrivals' && wasStationFound) { %>
 			<%= stationName %> Arrival Times
-		<% } else if(currentPage === 'arrivals' && !stationFound) { %>
+		<% } else if(currentPage === 'arrivals' && !wasStationFound) { %>
 			Station Not Found
 		<% } %>
 		</title>

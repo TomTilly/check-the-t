@@ -23,7 +23,6 @@ button,hr,input{overflow:visible}progress,sub,sup{vertical-align:baseline}[type=
 */
 
 
-
 /* ==========================================================================
    Global Styles
    ========================================================================== */
@@ -208,7 +207,7 @@ input[type="submit"]{
 	border-top-right-radius: 1rem;
 }
 
-.bus-stop {
+.local-bus {
 	color: #000000;
 	background-color: #FFC72C;
 }
@@ -216,6 +215,26 @@ input[type="submit"]{
 .red-line {
 	color: #FFFFFF;
 	background-color: #DA291C;
+}
+
+.green-line {
+	color: #FFFFFF;
+	background-color: #00843D;
+}
+
+.orange-line {
+	color: #FFFFFF;
+	background-color: #ED8B00;
+}
+
+.blue-line {
+	color: #FFFFFF;
+	background-color: #003DA5;
+}
+
+.silver-line {
+	color: #FFFFFF;
+	background-color: #7C878E;
 }
 
 .T-logo {

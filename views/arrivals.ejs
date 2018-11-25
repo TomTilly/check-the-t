@@ -1,60 +1,95 @@
-<%- include('partials/header', {currentPage: 'arrivals', stationFound: stationFound}) %>
+<%- include('partials/header', {currentPage: 'arrivals', wasStationFound: wasStationFound}) %>
 
-<% if(stationFound) { %>
-				<main>
+<% if(wasStationFound) { %>
+<main>
+<%
 
-					<!-- Bus -->
-					<section class="stop-container">
-						<h1 class="route-name bus-stop">
-							<span class="stop-num">88</span>
-							<span>Clarendon Hill - Lechmere via Highland Avenue</span>
-						</h1>
-						<h2 class="direction">Inbound → Lechmere</h2>
-						<ul>
-							<li><span class="arrival-time">1 min</span><span>Highland Ave @ Vinal Ave</span></li>
-							<li><span class="arrival-time">21 min</span><span>Highland Ave @ Vinal Ave</span></li>
-							<li><span class="arrival-time">39 min</span><span>Highland Ave @ Vinal Ave</span></li>
-						</ul>
-						<h3 class="direction">Outbound → Clarendon Hill</h3>
-						<ul>
-							<li><span class="arrival-time">8 min</span><span>Highland Ave @ Vinal Ave</span></li>
-							<li><span class="arrival-time">29 min</span><span>Highland Ave @ Vinal Ave</span></li>
-							<li><span class="arrival-time">42 min</span><span>Highland Ave @ Vinal Ave</span></li>
-						</ul>
-					</section>
+function getMinUntilArrival(time){
+	const currentTime = new Date();
+	return new Date(time - currentTime).getMinutes();
+}
 
-					<!-- Subway -->
-					<section class="stop-container">
-						<h1 class="route-name red-line">
-							<img alt="MBTA T Logo" class="T-logo" src="imgs/T-logo-w-transparent-bk.svg">
-							<span>Red Line</span>
-						</h1>
-						<h2 class="direction">Southbound → Braintree/Ashmont</h2>
-						<ul>
-							<li><span class="arrival-time">2 min</span><span>Porter Sq. (to Braintree)</span></li>
-							<li><span class="arrival-time">5 min</span><span>Porter Sq. (to Ashmont)</span></li>
-							<li><span class="arrival-time">7 min</span><span>Porter Sq. (to Braintree)</span></li>
-						</ul>
-						<h2 class="direction">Northbound → Alewife</h2>
-						<ul>
-							<li><span class="arrival-time">3 min</span><span>Porter Sq.</span></li>
-							<li><span class="arrival-time">9 min</span><span>Porter Sq.</span></li>
-							<li><span class="arrival-time">15 min</span><span>Porter Sq.</span></li>
-						</ul>
-					</section>
-				</main>
-<% } else { %>
-				<main class="flex-and-center reverse-top-margin">
-					<p class="h1-like center-horizontal">Couldn't find "<%= stationName %>". Please try again.</p>
-					<form action="/arrivals" method="get">
-						<h2 class="form-title">Enter Your Station</h2>
-						<label for="station-name" class="hide">Station Name</label>
-						<input type="text" name="station-name" placeholder="Ex: South Station">
-						<input type="submit" value="Get Times">
-					</form>
-				</main>
+for(let i = 0; i < routePredictions.length; i++) {
+	const routePrediction = routePredictions[i];
+	const routeType = routePrediction.route.attributes.description;
+	const routeID = routePrediction.route.id;
+	const stopName = routePrediction.stop.attributes.name;
+	let routeName;
+	if(routeType === 'Local Bus') {
+		routeName = routeType.toLowerCase().replace(/ /g,'-');
+	} else if (routeID === "741" || routeID === "742" || routeID === "743" || routeID === "751" || routeID === "749") {
+		routeName = "silver-line";
+	} else if (routeID === 'Mattapan') {
+		routeName = "red-line";
+	} else {
+		// will create red-line, green-line, blue-line, etc...
+		// .replace is necessary to get rid of the specifiers
+		routeName = `${routeID.toLowerCase().replace(/-./,'')}-line`;
+	}
+
+	const predictionsWithDirection0 = routePrediction.predictions.filter(p => p.attributes.direction_id === 0);
+	const predictionsWithDirection1 = routePrediction.predictions.filter(p => p.attributes.direction_id === 1);
+
+
+%>
+
+<!-- TODO
+		- Add function for calculating arrival times
+-->
+<section class="stop-container">
+	<h1 class="route-name <%= routeName %>">
+	<% if(routeName === 'local-bus') { %>
+		<span class="stop-num"><%= routeID.toString() %></span>	
+	<% } else { %>
+		<img alt="MBTA T Logo" class="T-logo" src="imgs/T-logo-w-transparent-bk.svg">
+	<% }%>
+		<span><%= routePrediction.route.attributes.long_name %></span>
+	</h1>
+	<% if(predictionsWithDirection0.length) { %>
+	<h2 class="direction"><%= routePrediction.route.attributes.direction_names[0] %></h2>
+	<ul>
+		<% 
+			predictionsWithDirection0.forEach(prediction => {
+				let arrivalTime = (prediction.attributes.arrival_time !== null) ? new Date(prediction.attributes.arrival_time) : new Date();
+				const tripID = prediction.relationships.trip.data.id;
+				const destination = routePrediction.trips.find(trip => trip.id === tripID).attributes.headsign;
+		%>
+			<li>
+				<span class="arrival-time"><%= getMinUntilArrival(arrivalTime) %> min</span>
+				<span><%= stopName %> (to <%= destination %>)</span>
+			</li>
+		<% }); %>
+	</ul>
+	<% } %>
+	<% if(predictionsWithDirection1.length) { %>
+	<h2 class="direction"><%= routePrediction.route.attributes.direction_names[1] %></h2>
+	<ul>
+		<%
+			predictionsWithDirection1.forEach(prediction => {
+				let arrivalTime = (prediction.attributes.arrival_time !== null) ? new Date(prediction.attributes.arrival_time) : new Date();
+				const tripID = prediction.relationships.trip.data.id;
+				const destination = routePrediction.trips.find(trip => trip.id === tripID).attributes.headsign;
+		%>
+			<li>
+				<span class="arrival-time"><%= getMinUntilArrival(arrivalTime) %> min</span>
+				<span><%= stopName %> (to <%= destination %>)</span>
+			</li>
+		<% }); %>
+	</ul>
+	<% } %>
+</section>
 <% } %>
-					
-			
-	</body>
+</main>
+<% } else { %>
+<main class="flex-and-center reverse-top-margin">
+	<p class="h1-like center-horizontal">Couldn't find "<%= stationName %>". Please try again.</p>
+	<form action="/arrivals" method="get">
+		<h2 class="form-title">Enter Your Station</h2>
+		<label for="station-name" class="hide">Station Name</label>
+		<input type="text" name="station-name" placeholder="Ex: South Station">
+		<input type="submit" value="Get Times">
+	</form>
+</main>
+<% } %>
+</body>
 </html>

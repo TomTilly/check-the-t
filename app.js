@@ -38,7 +38,7 @@ app.get('/', function(req, res) {
 
 app.get('/arrivals', function(req, res) {
 	const stationName = req.query['station-name'];
-	let stationIDs = []; 
+	let stationIDs = [];
 	stops.forEach(stop => {
 		if(stationName == stop.name){
 			stationIDs.push(stop.id);
@@ -50,16 +50,15 @@ app.get('/arrivals', function(req, res) {
 
 	const predictionsRequestUrl = `https://api-v3.mbta.com/predictions?filter[stop]=${stationIDs}&include=route,stop,trip&filter[route_type]=0,1,3&sort=departure_time`;
 	const routePredictions = [];
-	let stationFound;
+	let wasStationFound;
 
 	request(predictionsRequestUrl, function (error, response, body) {
 		if(!error && response.statusCode == 200){
 			body = JSON.parse(body);
 			let firstPass = true;
 			if(body.data.length){
-				stationFound = true;
+				wasStationFound = true;
 				body.data.forEach(function(prediction){
-					console.log('hello');
 					/*
 					Check if current prediction's route ID matches the route ID
 					in an object in the routePredictions array. If true,
@@ -69,60 +68,54 @@ app.get('/arrivals', function(req, res) {
 					*/
 					const routeID = prediction.relationships.route.data.id;
 					const tripID = prediction.relationships.trip.data.id;
-					const route = body.included.find(includedObj => {
-						console.log('includedObj.type: ' + includedObj.type);
-						return (includedObj.type === 'route' && includedObj.id === routeID);
-					}); // returns route obj with ID matching current prediction's route ID
+					
+					// returns trip obj with ID matching current prediction's trip ID
 					const trip = body.included.find(includedObj => {
 						return (includedObj.type === 'trip' && includedObj.id === tripID);
-					}); // returns trip obj with ID matching current prediction's trip ID
+					}); 
+					const index = routePredictions.findIndex(routePrediction => routePrediction.route.id === routeID);
 
-					if(firstPass){
+					// no match was found in routePredictions array, so add new routePrediction obj
+					if(index === -1){ 
+						const stopID = prediction.relationships.stop.data.id;
+						const stop = body.included.find(includedObj => {
+							return (includedObj.type === 'stop' && includedObj.id === stopID);
+						});
+
+						// returns route obj with ID matching current prediction's route ID
+						const route = body.included.find(includedObj => {
+							return (includedObj.type === 'route' && includedObj.id === routeID);
+						}); 
 						routePredictions.push(
 							{
 								route: route,
+								stop: stop,
 								trips: [trip],
 								predictions: [prediction]
 							}
 						);
-						firstPass = false;
-					} else {
-						const index = routePredictions.findIndex(routePrediction => routePrediction.route.id === routeID);
+					}
+					// match was found
+					else { 
 						const predictionDirection = prediction.attributes.direction_id;
-						let predictionsWithSameDirection;
-						if(routePredictions[index]){
-							predictionsWithSameDirection = routePredictions[index].predictions.filter(prediction => prediction.attributes.direction_id === predictionDirection);
-						}
-						
-						console.log(index);
-						if(index === -1){
-							routePredictions.push(
-								{
-									route: route,
-									trips: [trip],
-									predictions: [prediction]
-								}
-							);
-						} else if(routePredictions[index] && predictionsWithSameDirection.length < 4){
+						const predictionsWithSameDirection = routePredictions[index].predictions.filter(prediction => prediction.attributes.direction_id === predictionDirection); 
+						if(predictionsWithSameDirection.length < 3){
 							routePredictions[index].predictions.push(prediction);
 							routePredictions[index].trips.push(trip);
-							console.log('prediction added');
-						} else {
-							console.log(`Didn't add prediction`);
 						}
 					}
 				});
-			} else { // Station not found
-				stationFound = false;
+			} else { // station not found
+				wasStationFound = false;
 				console.log('no predictions returned, station name not found');
 			}
 			console.log(util.inspect(routePredictions, {depth: 50, colors: true}));
-		} else {
-		console.log('error:', error);
-		console.log('statusCode:', reponse && reponse.statusCode);
+		} else { // error in request to API
+			console.log('error:', error);
+			console.log('statusCode:', reponse && reponse.statusCode);
 		}
-		console.log("stationFound: " + stationFound);
-		res.render('arrivals', {routePredictions: routePredictions, stationName: stationName, stationFound: stationFound});
+		
+		res.render('arrivals', {routePredictions: routePredictions, stationName: stationName, wasStationFound: wasStationFound});
 	});
 });
 
