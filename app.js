@@ -82,17 +82,6 @@ app.get('/', function(req, res) {
 
 app.get('/arrivals', function(req, res) {
 	const stationName = req.query['station-name'];
-	// let stationIDs = [];
-	// stops.forEach(stop => {
-	// 	if(stationName == stop.name){
-	// 		stationIDs.push(stop.id);
-	// 	}
-	// });
-	// stationIDs = stationIDs.join(',');
-	// console.log(stationName);
-	// console.log(stationIDs);
-
-	// TODO - Retrieve stop(s) from database
 
 	Stop.find({ name: stationName}, function(err, stops){
 		let stationIDs = [];
