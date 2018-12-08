@@ -1,34 +1,48 @@
+// Requiring packages
+
 const express = require('express');
+const app = express();
 const request = require('request');
 const util = require('util');
-const app = express();
+const mongoose = require('mongoose');
+
+require('dotenv').config({ path: 'variables.env' })
+
 const port = 7777; // For testing on localhost
 
-app.set('view engine', 'ejs');
-app.use(express.static('public'));
+app.set('view engine', 'ejs'); // Set template engine
+app.use(express.static('public')); // Use public directory when serving assets
 
+// Get all stop names and ids and store as objects in array. Temporary until DB implemented
 
-// Get all stop names and ids and store as objects in array. Only use until database is implemented
+mongoose.connect(process.env.DATABASE);
 
-const stops = [];
+mongoose.connection.on('error', (err) => {
+	console.error(`Error: ${err.message}`);
+});
 
-request('https://api-v3.mbta.com/stops', function (error, response, body) {
-		if(!error && response.statusCode == 200){
-			const stopInfo = JSON.parse(body);
-			for(let i = 0; i < stopInfo.data.length; i++){
-				stops.push(
-					{
-						name: stopInfo.data[i].attributes.name,
-						id: stopInfo.data[i].id
-					}
-				);
-			}
-			console.log(stops);
-		} else {
-			console.log('error:', error);
-			console.log('statusCode:', reponse && reponse.statusCode);
-		}
-	});
+// Check DB for current date
+
+// If date is >1 day ago, delete old collection and use new collection
+
+// request('https://api-v3.mbta.com/stops', function (error, response, body) {
+// 	if(!error && response.statusCode == 200){
+// 		const stopInfo = JSON.parse(body);
+// 		for(let i = 0; i < stopInfo.data.length; i++){
+// 				// Replace with database entry
+// 				// stops.push(
+// 				// 	{
+// 				// 		name: stopInfo.data[i].attributes.name,
+// 				// 		id: stopInfo.data[i].id
+// 				// 	}
+// 				// );
+// 		}
+// 		console.log(stops);
+// 	} else {
+// 		console.log('error:', error);
+// 		console.log('statusCode:', reponse && reponse.statusCode);
+// 	}
+// });
 
 /* Routes */
 
