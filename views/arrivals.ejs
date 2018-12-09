@@ -2,8 +2,8 @@
 
 <% if(wasStationFound) { %>
 <main>
-<%
 
+<%
 function getMinUntilArrival(time){
 	const currentTime = new Date();
 	return new Date(time - currentTime).getMinutes();
@@ -15,27 +15,22 @@ for(let i = 0; i < routePredictions.length; i++) {
 	const routeID = routePrediction.route.id;
 	const stopName = routePrediction.stop.attributes.name;
 	let routeName;
-	if(routeType === 'Local Bus') {
-		routeName = routeType.toLowerCase().replace(/ /g,'-');
+	if(routeType === 'Local Bus' || routeType === 'Key Bus Route (Frequent Service)') {
+		routeName = 'local-bus';
 	} else if (routeID === "741" || routeID === "742" || routeID === "743" || routeID === "751" || routeID === "749") {
 		routeName = "silver-line";
 	} else if (routeID === 'Mattapan') {
 		routeName = "red-line";
 	} else {
 		// will create red-line, green-line, blue-line, etc...
-		// .replace is necessary to get rid of the specifiers
+		// .replace is necessary to get rid of subroutes on Green Line (ex: removes '-B' in 'Green-B')
 		routeName = `${routeID.toLowerCase().replace(/-./,'')}-line`;
 	}
 
 	const predictionsWithDirection0 = routePrediction.predictions.filter(p => p.attributes.direction_id === 0);
 	const predictionsWithDirection1 = routePrediction.predictions.filter(p => p.attributes.direction_id === 1);
-
-
 %>
 
-<!-- TODO
-		- Add function for calculating arrival times
--->
 <section class="stop-container">
 	<h1 class="route-name <%= routeName %>">
 	<% if(routeName === 'local-bus') { %>
