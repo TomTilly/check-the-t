@@ -50,6 +50,7 @@ body {
 	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../imgs/lance-anderson-393963-unsplash-min.jpg");
 	background-size: cover;
 	background-attachment: fixed;
+	background-position: center;
 }
 
 .wrapper {
@@ -84,6 +85,12 @@ h2 {
 	text-align: center;
 }
 
+@media all and (max-width: 575px) {
+	h1.reverse-top-margin, .h1-like {
+		font-size: 2em;
+		margin-top: 0;
+	}
+}
 
 /* Header
    ========================================================================== */
@@ -93,7 +100,7 @@ header {
 	justify-content: space-between;
 	align-items: center;
 	width: 100%;
-	padding: 1em;
+	padding: 1em 0;
 }
 
 .logo {
@@ -151,6 +158,13 @@ main.flex-and-center {
 	text-align: center;
 }
 
+@media all and (max-height: 500px) {
+	.home h1 {
+		margin: 0;
+		font-size: 2em;
+	}
+}
+
 
 /* Enter Stop Form
    ========================================================================== */
@@ -170,10 +184,22 @@ input[type="text"] {
 	border: none;
 }
 
-input[type="submit"]{
+input[type="submit"] {
 	margin-left: .2em;
 	background: #f15273;
 	border: 0;
+}
+
+@media all and (max-width: 575px) {
+	input[type="text"] {
+		display: block;
+		margin-bottom: .5em;
+	}
+
+	input[type="submit"] {
+		width: 100%;
+		margin-left: 0;
+	}
 }
 
 
@@ -256,7 +282,6 @@ input[type="submit"]{
 .direction {
 	padding: 1em;
 	margin: 0;
-	text-align: center;
 	font-size: 1.4em;
 	font-weight: bold;
 	color: white;
@@ -285,4 +310,30 @@ input[type="submit"]{
 	flex-basis: 20%;
 	margin-right: 1em;
 	color: white;
+}
+
+@media all and (max-width: 991px) {
+	.stop-container {
+		width: 100%
+	}
+}
+
+@media all and (max-width: 767px) {
+	.stop-container {
+		width: 100%;
+		margin-bottom: 50px;
+	}
+
+	.route-name {
+		font-size: 1.2em;
+		border-bottom: 3px;
+	}
+
+	.direction {
+		font-size: 1em;
+	}
+
+	.stop-container ul {
+		font-size: 1em;
+	}
 }
