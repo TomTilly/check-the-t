@@ -86,9 +86,15 @@ h2 {
 }
 
 @media all and (max-width: 575px) {
-	h1.reverse-top-margin, .h1-like {
+	h1.mobile-margin, .h1-like {
 		font-size: 2em;
 		margin-top: 0;
+	}
+}
+
+@media all and (min-width: 1200px) {
+	.wrapper {
+		max-width: 1200px;
 	}
 }
 
