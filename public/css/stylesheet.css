@@ -71,7 +71,7 @@ body {
 	margin-top: -200px;
 }
 
-h1, .h1-like { /* .h1-like are not semantically h1s but are styled the same */
+h1, .h1-like {
 	font-size: 3em;
 	margin-bottom: .5em;
 }
@@ -158,8 +158,6 @@ main.flex-and-center {
 }
 
 
-
-
 /* Enter Stop Form
    ========================================================================== */
 
@@ -188,9 +186,13 @@ input[type="submit"]{
 /* Arrivals Page
    ========================================================================== */
 
+.arrivals main {
+	margin-top: 50px;
+}
+
 .stop-container {
-	width: 50%;
-	margin-bottom: 70px;
+	width: 70%;
+	margin: 0 auto 70px;
 	background: rgba(0, 0, 0, 0.8);
 	color: rgba(255,255,255);
 	border-radius: 1rem;
@@ -276,7 +278,7 @@ input[type="submit"]{
 
 .stop-container li {
 	display: flex;
-	padding: .5em 2em;
+	padding: .75em 2em;
 	color: rgba(255, 255, 255, 0.8);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.8);
 }
