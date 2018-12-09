@@ -106,14 +106,9 @@ header {
 	transition: opacity .2s linear;
 }
 
-nav ul {
-	display: flex;
-	list-style-type: none;
+nav a {
 	padding: 0;
 	font-size: 1.25em;
-}
-
-nav ul a {
 	color: #FFF;
 	opacity: 0.8;
 	text-decoration: none;
