@@ -4,9 +4,26 @@
 <main>
 
 <%
-function getMinUntilArrival(time){
+
+function maybePluralize(count, noun, suffix = 's') {
+  return `${count} ${noun}${count !== 1 ? suffix : ''}`;
+}
+
+function getTimeUntilArrival(arrivalTime) {
 	const currentTime = new Date();
-	return new Date(time - currentTime).getMinutes();
+	const difference = new Date(arrivalTime - currentTime);
+	if(currentTime > arrivalTime){
+		return 'Arr.';
+	} else if (difference.getUTCHours() > 0){
+		return `${maybePluralize(difference.getUTCHours(), 'hr')} ${difference.getMinutes()} min`;
+	} else if (difference.getMinutes() > 0) {
+		return `${difference.getMinutes()} min`;
+	} else if (difference.getSeconds() > 30) {
+		return '1 min';
+	} else {
+		return 'Arr.';
+	}
+	
 }
 
 for(let i = 0; i < routePredictions.length; i++) {
@@ -50,7 +67,7 @@ for(let i = 0; i < routePredictions.length; i++) {
 				const destination = routePrediction.trips.find(trip => trip.id === tripID).attributes.headsign;
 		%>
 			<li>
-				<span class="arrival-time"><%= getMinUntilArrival(arrivalTime) %> min</span>
+				<span class="arrival-time"><%= getTimeUntilArrival(arrivalTime) %></span>
 				<span><%= stopName %> (to <%= destination %>)</span>
 			</li>
 		<% }); %>
@@ -66,7 +83,7 @@ for(let i = 0; i < routePredictions.length; i++) {
 				const destination = routePrediction.trips.find(trip => trip.id === tripID).attributes.headsign;
 		%>
 			<li>
-				<span class="arrival-time"><%= getMinUntilArrival(arrivalTime) %> min</span>
+				<span class="arrival-time"><%= getTimeUntilArrival(arrivalTime) %></span>
 				<span><%= stopName %> (to <%= destination %>)</span>
 			</li>
 		<% }); %>
