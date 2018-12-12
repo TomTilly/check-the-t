@@ -9,21 +9,25 @@ function maybePluralize(count, noun, suffix = 's') {
   return `${count} ${noun}${count !== 1 ? suffix : ''}`;
 }
 
-function getTimeUntilArrival(arrivalTime) {
-	const currentTime = new Date();
-	const difference = new Date(arrivalTime - currentTime);
-	if(currentTime > arrivalTime){
-		return 'Arr.';
-	} else if (difference.getUTCHours() > 0){
-		return `${maybePluralize(difference.getUTCHours(), 'hr')} ${difference.getMinutes()} min`;
-	} else if (difference.getMinutes() > 0) {
-		return `${difference.getMinutes()} min`;
-	} else if (difference.getSeconds() > 30) {
-		return '1 min';
+function getTimeUntilArrival(timePrediction) {
+	if(timePrediction.time) {
+		const currentTime = new Date();
+		const difference = new Date(timePrediction.time - currentTime);
+		if(currentTime > timePrediction.time){
+			return (timePrediction.type === 'Arrival') ? 'Arriving' : 'Boarding';
+		} else if (difference.getUTCHours() > 0){
+			return `${maybePluralize(difference.getUTCHours(), 'hr')} ${difference.getMinutes()} min`;
+		} else if (difference.getMinutes() > 0) {
+			return `${difference.getMinutes()} min`;
+		} else if (difference.getSeconds() > 30) {
+			return '1 min';
+		} else {
+			return (timePrediction.type === 'Arrival') ? 'Arriving' : 'Boarding'
+		}
 	} else {
-		return 'Arr.';
+		console.log('Time prediction error');
+		return 'Error';
 	}
-	
 }
 
 for(let i = 0; i < routePredictions.length; i++) {
@@ -62,12 +66,24 @@ for(let i = 0; i < routePredictions.length; i++) {
 	<ul>
 		<% 
 			predictionsWithDirection0.forEach(prediction => {
-				let arrivalTime = (prediction.attributes.arrival_time !== null) ? new Date(prediction.attributes.arrival_time) : new Date();
+				let timePrediction = {};
+				if(prediction.attributes.arrival_time && prediction.attributes.departure_time) {
+					// Mid-route stop, display arrival time
+					timePrediction.time = new Date(prediction.attributes.arrival_time);
+					timePrediction.type = 'Arrival';
+				} else if (prediction.attributes.departure_time) {
+					// Last stop, don't display any time
+					timePrediction.time = null;
+				} else if (prediction.attributes.departure_time && !prediction.attributes.arrival_time) {
+					// First stop, display departure time and use "Boarding" vs. "Arriving"
+					timePrediction.time = new Date(prediction.attributes.departure_time);
+					timePrediction.type = 'Departure';
+				}
 				const tripID = prediction.relationships.trip.data.id;
 				const destination = routePrediction.trips.find(trip => trip.id === tripID).attributes.headsign;
 		%>
 			<li>
-				<span class="arrival-time"><%= getTimeUntilArrival(arrivalTime) %></span>
+				<span class="arrival-time"><%= getTimeUntilArrival(timePrediction) %></span>
 				<span><%= stopName %> (to <%= destination %>)</span>
 			</li>
 		<% }); %>
@@ -78,12 +94,24 @@ for(let i = 0; i < routePredictions.length; i++) {
 	<ul>
 		<%
 			predictionsWithDirection1.forEach(prediction => {
-				let arrivalTime = (prediction.attributes.arrival_time !== null) ? new Date(prediction.attributes.arrival_time) : new Date();
+				let timePrediction = {};
+				if(prediction.attributes.arrival_time && prediction.attributes.departure_time) {
+					// Mid-route stop, display arrival time
+					timePrediction.time = new Date(prediction.attributes.arrival_time);
+					timePrediction.type = 'Arrival';
+				} else if (prediction.attributes.departure_time) {
+					// Last stop, don't display any time
+					timePrediction.time = null;
+				} else if (prediction.attributes.departure_time && !prediction.attributes.arrival_time) {
+					// First stop, display departure time and use "Boarding" vs. "Arriving"
+					timePrediction.time = new Date(prediction.attributes.departure_time);
+					timePrediction.type = 'Departure';
+				}
 				const tripID = prediction.relationships.trip.data.id;
 				const destination = routePrediction.trips.find(trip => trip.id === tripID).attributes.headsign;
 		%>
 			<li>
-				<span class="arrival-time"><%= getTimeUntilArrival(arrivalTime) %></span>
+				<span class="arrival-time"><%= getTimeUntilArrival(timePrediction) %></span>
 				<span><%= stopName %> (to <%= destination %>)</span>
 			</li>
 		<% }); %>
