@@ -242,6 +242,10 @@ app.get('/arrivals', function(req, res) {
 	}); // end of database lookup
 });
 
+app.get('/about', function(req, res) {
+	res.render('about');
+});
+
 
 app.get('*', function(req, res) {
 	res.render('404');
