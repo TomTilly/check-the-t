@@ -13,7 +13,8 @@ const port = 7777; // For testing on localhost
 app.set('view engine', 'ejs'); // Set template engine
 app.use(express.static('public')); // Use public directory when serving assets
 
-// Get all stop names and ids and store as objects in array. Temporary until DB implemented
+
+// Connect to Database
 
 mongoose.connect(process.env.DATABASE, { 
 	auth: {
@@ -22,9 +23,6 @@ mongoose.connect(process.env.DATABASE, {
 	},
 	useNewUrlParser: true 
 });
-
-console.log(process.env.DB_USER);
-console.log(process.env.DB_PASS);
 
 const db = mongoose.connection;
 
@@ -39,12 +37,11 @@ const stopsSchema = new mongoose.Schema({
 
 const Stop = mongoose.model("Stop", stopsSchema);
 
-db.once('open', function(){
-	/* Save stops to database (commented out so it only runs once,
-	 * not sure how to update previous entries). In future, run this
-	 * once per day at 3AM, and check last-modified header
-	 * in API response to see if version is current */
-
+/* Save stops to database (commented out so it only runs once,
+ * not sure how to update previous entries). In future, run this
+ * once per day at 3AM, and check last-modified header
+ * in API response to see if version is current */
+// db.once('open', function(){
 	// request('https://api-v3.mbta.com/stops', function (error, response, body) {
 	// 	if(!error && response.statusCode == 200){
 	// 		const stopInfo = JSON.parse(body);
@@ -68,7 +65,7 @@ db.once('open', function(){
 	// 		console.log('statusCode:', reponse && reponse.statusCode);
 	// 	}
 	// });
-});
+// });
 
 /* Routes */
 
@@ -78,94 +75,173 @@ app.get('/', function(req, res) {
 
 app.get('/arrivals', function(req, res) {
 	const stationName = req.query['station-name'];
-
-	Stop.find({ name: stationName}, function(err, stops){
-		if(err){
+	Stop.find({name: stationName}, function(err, stops){
+		if(err) {
 			console.log("Error finding item in DB: ", err);
 		} else {
+			// get prediction URL
 			let stationIDs = [];
+			let predictionsRequestURL = '';
+			let routePredictions = [];
+			let wasStationFound = false;
 			stops.forEach(stop => {
 				stationIDs.push(encodeURIComponent(stop.id));
 			});
-			stationIDs = stationIDs.join(',');
-			console.log('StationIDs: ', stationIDs);
-			let predictionsRequestUrl = `https://api-v3.mbta.com/predictions?filter[stop]=${stationIDs}&include=route,stop,trip&filter[route_type]=0,1,3&sort=departure_time`;
-				console.log('predictionsRequestUrl: ', predictionsRequestUrl);
+			stationIDs.join(',');
+			predictionsRequestURL = `https://api-v3.mbta.com/predictions?filter[stop]=${stationIDs}&include=route,stop,trip&filter[route_type]=0,1,3&sort=departure_time`;
+			console.log('predictionsRequestURL: ', predictionsRequestURL);
 
-			const routePredictions = [];
-			let wasStationFound;
+			// note: maybe include this elsewhere as utility?
+			function maybePluralize(count, noun, suffix = 's') {
+			  return `${count} ${noun}${count !== 1 ? suffix : ''}`;
+			}
 
-			request(predictionsRequestUrl, function (error, response, body) {
-				if(!error && response.statusCode == 200){
+			// routePredictions contain meta data about a route and predictions belonging to that route for the stop requested by the user
+			function RoutePrediction(route, filteredPrediction) {
+				this.routeID = route.id;
+				this.routeClassAttr = getClassAttr(this.routeID, route.attributes.description); // used to display class names in html to trigger css styles
+				this.routeDisplayName = route.attributes.long_name;
+				this.directionNames = route.attributes.direction_names;
+				this.predictions = [ [], [] ];
+				this.predictions[filteredPrediction.directionID].push(filteredPrediction);
+			}
+
+			// filteredPredictions are filtered down from srcPredictions(the predictions from the API) to only the essential information for the app
+			function FilteredPrediction(stopName, destination, directionID, timePrediction) {
+				this.stopName = stopName;
+				this.destination = destination;
+				this.directionID = directionID;
+				this.timePrediction = timePrediction;
+			}
+
+			/* Return values:
+			 * if mid-route stop, return arrival time. return 'Arriving' when time < 30 seconds
+			 * if last stop, return null (don't want to display this prediction)
+			 * if first stop, return departure time. return 'Boarding' when time < 30 seconds
+			*/
+			function getTimePrediction(srcPrediction) {
+				// determine whether to display arrival or departure time
+				const arrivalTime = srcPrediction.attributes.arrival_time;
+				const departureTime = srcPrediction.attributes.departure_time;
+				let hasArrivalTime = false;
+				let timePrediction;
+				if(arrivalTime && departureTime) {
+					// mid-route stop, display arrival time
+					timePrediction = new Date(arrivalTime);
+					hasArrivalTime = true;
+				} else if (!departureTime) {
+					// last stop, don't display any time
+					return null;
+				} else if (departureTime && !arrivalTime) {
+					// first stop, display departure time and use "Boarding" vs. "Arriving"
+					timePrediction = new Date(departureTime);
+					hasArrivalTime = false;
+				}
+
+				// get time to display to user
+				if(timePrediction) {
+					const currentTime = new Date();
+					const difference = new Date(timePrediction - currentTime);
+					if(currentTime > timePrediction){
+						return (hasArrivalTime) ? 'ARR' : 'BRD';
+					} else if (difference.getUTCHours() > 0){
+						if(difference.getMinutes() > 0) {
+							return `${maybePluralize(difference.getUTCHours(), 'hr')} ${difference.getMinutes()} min`;	
+						} else {
+							// minutes are 0, exclude from return
+							return `${maybePluralize(difference.getUTCHours(), 'hr')}`;
+						}
+					} else if (difference.getMinutes() > 0) {
+						return `${difference.getMinutes()} min`;
+					} else if (difference.getSeconds() > 30) {
+						return '1 min';
+					} else {
+						return (hasArrivalTime) ? 'ARR' : 'BRD';
+					}
+				} else {
+					console.log('Time prediction error');
+					return 'Error';
+				}
+			}
+
+			function getClassAttr(routeID, routeDesc) {
+				if(routeDesc === 'Local Bus' || routeDesc === 'Key Bus Route (Frequent Service)') {
+					return 'local-bus';
+				} else if (routeID === "741" || routeID === "742" || routeID === "743" || routeID === "751" || routeID === "749") {
+					return "silver-line";
+				} else if (routeID === 'Mattapan') {
+					return "red-line";
+				} else {
+					// will create red-line, green-line, blue-line, etc...
+					// .replace is necessary to get rid of subroutes on Green Line (ex: removes '-B' in 'Green-B')
+					return `${routeID.toLowerCase().replace(/-./,'')}-line`;
+				}
+			}
+
+			// send request to MBTA api
+			request(predictionsRequestURL, function(error, response, body) {
+				if(error || !(response.statusCode == 200)) {
+					// error in request to API
+					console.log('error:', error);
+					console.log('statusCode:', reponse && reponse.statusCode);
+				} else {
+					// request successful
 					body = JSON.parse(body);
-					let firstPass = true;
-					if(body.data.length){
+					if(!body.data.length) {
+						// station was not found, 
+						wasStationFound = false;
+						console.log('no predictions returned, station name not found');
+					} else {
+						// station(s) found, get predictions for each route and send to arrivals template
 						wasStationFound = true;
-						body.data.forEach(function(prediction){
-							/*
-							Check if current prediction's route ID matches the route ID
-							in an object in the routePredictions array. If true,
-							check if time is earlier than other predictions in 
-							routePredictions[index].predictions array and add it if it is.
-							If false, push new object to routePredictions array with ID of new route.
-							*/
-							const routeID = prediction.relationships.route.data.id;
-							const tripID = prediction.relationships.trip.data.id;
+						
+						// srcPredictions are the predictions returned from the MBTA API
+						body.data.forEach(function(srcPrediction){
 							
-							// returns trip obj with ID matching current prediction's trip ID
-							const trip = body.included.find(includedObj => {
-								return (includedObj.type === 'trip' && includedObj.id === tripID);
-							}); 
-							const index = routePredictions.findIndex(routePrediction => routePrediction.route.id === routeID);
-
-							// no match was found in routePredictions array, so add new routePrediction obj
-							if(index === -1){ 
-								const stopID = prediction.relationships.stop.data.id;
+							// check time prediction. returns null if last stop on a trip, which shouldn't be displayed
+							const timePrediction = getTimePrediction(srcPrediction);
+							if(timePrediction) {
+								const routeID = srcPrediction.relationships.route.data.id;
+								const index = routePredictions.findIndex(routePrediction => routePrediction.routeID === routeID); // returns the index number of the routePrediction with a matching routeID, or -1 if it can't be found
+								const tripID = srcPrediction.relationships.trip.data.id;
+								const stopID = srcPrediction.relationships.stop.data.id;
 								const stop = body.included.find(includedObj => {
 									return (includedObj.type === 'stop' && includedObj.id === stopID);
 								});
+								const trip = body.included.find(includedObj => {
+									return (includedObj.type === 'trip' && includedObj.id === tripID);
+								});
+								const stopName = stop.attributes.name;
+								const destination = trip.attributes.headsign;
+								const directionID = srcPrediction.attributes.direction_id;
+								const timePrediction = getTimePrediction(srcPrediction);
 
-								// returns route obj with ID matching current prediction's route ID
-								const route = body.included.find(includedObj => {
-									return (includedObj.type === 'route' && includedObj.id === routeID);
-								}); 
-								routePredictions.push(
-									{
-										route: route,
-										stop: stop,
-										trips: [trip],
-										predictions: [prediction]
+								if(index === -1) {
+									// no match was found in routePredictions array, add new routePrediction obj
+									const route = body.included.find(includedObj => {
+										return (includedObj.type === 'route' && includedObj.id === routeID);
+									});
+									// Make filtered prediction obj send to routePrediction
+									const filteredPrediction = new FilteredPrediction(stopName, destination, directionID, timePrediction);	
+									// Push routePrediction
+									routePredictions.push(new RoutePrediction(route, filteredPrediction));
+								} else {
+									// match was found in routePredictions array, add prediction to routePredictions.predictions[directionID] if length < 3
+									if(routePredictions[index].predictions[directionID].length < 3) {
+										routePredictions[index].predictions[directionID].push(new FilteredPrediction(stopName, destination, directionID, timePrediction));
 									}
-								);
-							}
-							// match was found
-							else { 
-								const predictionDirection = prediction.attributes.direction_id;
-								const predictionsWithSameDirection = routePredictions[index].predictions.filter(prediction => prediction.attributes.direction_id === predictionDirection); 
-								if(predictionsWithSameDirection.length < 3){
-									routePredictions[index].predictions.push(prediction);
-									routePredictions[index].trips.push(trip);
 								}
 							}
 						});
-					} else { // station not found
-						wasStationFound = false;
-						console.log('no predictions returned, station name not found');
 					}
-					console.log(util.inspect(routePredictions, {depth: 50, colors: true}));
-				} else { // error in request to API
-					console.log('error:', error);
-					console.log('statusCode:', reponse && reponse.statusCode);
 				}
-				
+				console.log(util.inspect(routePredictions, {depth: 50, colors: true}));
 				res.render('arrivals', {routePredictions: routePredictions, stationName: stationName, wasStationFound: wasStationFound});
-			});
+			}); // end of api request
 		}
-		
-	});
-
-
+	}); // end of database lookup
 });
+
 
 app.get('*', function(req, res) {
 	res.render('404');

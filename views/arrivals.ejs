@@ -1,125 +1,33 @@
-<%- include('partials/header', {currentPage: 'arrivals', wasStationFound: wasStationFound}) %>
-
+<%- include('partials/header', { currentPage: 'arrivals', wasStationFound: wasStationFound }) %>
 <% if(wasStationFound) { %>
 <main>
-
-<%
-
-function maybePluralize(count, noun, suffix = 's') {
-  return `${count} ${noun}${count !== 1 ? suffix : ''}`;
-}
-
-function getTimeUntilArrival(timePrediction) {
-	if(timePrediction.time) {
-		const currentTime = new Date();
-		const difference = new Date(timePrediction.time - currentTime);
-		if(currentTime > timePrediction.time){
-			return (timePrediction.type === 'Arrival') ? 'Arriving' : 'Boarding';
-		} else if (difference.getUTCHours() > 0){
-			return `${maybePluralize(difference.getUTCHours(), 'hr')} ${difference.getMinutes()} min`;
-		} else if (difference.getMinutes() > 0) {
-			return `${difference.getMinutes()} min`;
-		} else if (difference.getSeconds() > 30) {
-			return '1 min';
-		} else {
-			return (timePrediction.type === 'Arrival') ? 'Arriving' : 'Boarding'
-		}
-	} else {
-		console.log('Time prediction error');
-		return 'Error';
-	}
-}
-
-for(let i = 0; i < routePredictions.length; i++) {
-	const routePrediction = routePredictions[i];
-	const routeType = routePrediction.route.attributes.description;
-	const routeID = routePrediction.route.id;
-	const stopName = routePrediction.stop.attributes.name;
-	let routeName;
-	if(routeType === 'Local Bus' || routeType === 'Key Bus Route (Frequent Service)') {
-		routeName = 'local-bus';
-	} else if (routeID === "741" || routeID === "742" || routeID === "743" || routeID === "751" || routeID === "749") {
-		routeName = "silver-line";
-	} else if (routeID === 'Mattapan') {
-		routeName = "red-line";
-	} else {
-		// will create red-line, green-line, blue-line, etc...
-		// .replace is necessary to get rid of subroutes on Green Line (ex: removes '-B' in 'Green-B')
-		routeName = `${routeID.toLowerCase().replace(/-./,'')}-line`;
-	}
-
-	const predictionsWithDirection0 = routePrediction.predictions.filter(p => p.attributes.direction_id === 0);
-	const predictionsWithDirection1 = routePrediction.predictions.filter(p => p.attributes.direction_id === 1);
-%>
-
-<section class="stop-container">
-	<h1 class="route-name <%= routeName %>">
-	<% if(routeName === 'local-bus') { %>
-		<span class="stop-num"><%= routeID.toString() %></span>	
-	<% } else { %>
-		<img alt="MBTA T Logo" class="T-logo" src="imgs/T-logo-w-transparent-bk.svg">
-	<% }%>
-		<span><%= routePrediction.route.attributes.long_name %></span>
-	</h1>
-	<% if(predictionsWithDirection0.length) { %>
-	<h2 class="direction"><%= routePrediction.route.attributes.direction_names[0] %></h2>
-	<ul>
-		<% 
-			predictionsWithDirection0.forEach(prediction => {
-				let timePrediction = {};
-				if(prediction.attributes.arrival_time && prediction.attributes.departure_time) {
-					// Mid-route stop, display arrival time
-					timePrediction.time = new Date(prediction.attributes.arrival_time);
-					timePrediction.type = 'Arrival';
-				} else if (prediction.attributes.departure_time) {
-					// Last stop, don't display any time
-					timePrediction.time = null;
-				} else if (prediction.attributes.departure_time && !prediction.attributes.arrival_time) {
-					// First stop, display departure time and use "Boarding" vs. "Arriving"
-					timePrediction.time = new Date(prediction.attributes.departure_time);
-					timePrediction.type = 'Departure';
-				}
-				const tripID = prediction.relationships.trip.data.id;
-				const destination = routePrediction.trips.find(trip => trip.id === tripID).attributes.headsign;
-		%>
-			<li>
-				<span class="arrival-time"><%= getTimeUntilArrival(timePrediction) %></span>
-				<span><%= stopName %> (to <%= destination %>)</span>
-			</li>
-		<% }); %>
-	</ul>
-	<% } %>
-	<% if(predictionsWithDirection1.length) { %>
-	<h2 class="direction"><%= routePrediction.route.attributes.direction_names[1] %></h2>
-	<ul>
-		<%
-			predictionsWithDirection1.forEach(prediction => {
-				let timePrediction = {};
-				if(prediction.attributes.arrival_time && prediction.attributes.departure_time) {
-					// Mid-route stop, display arrival time
-					timePrediction.time = new Date(prediction.attributes.arrival_time);
-					timePrediction.type = 'Arrival';
-				} else if (prediction.attributes.departure_time) {
-					// Last stop, don't display any time
-					timePrediction.time = null;
-				} else if (prediction.attributes.departure_time && !prediction.attributes.arrival_time) {
-					// First stop, display departure time and use "Boarding" vs. "Arriving"
-					timePrediction.time = new Date(prediction.attributes.departure_time);
-					timePrediction.type = 'Departure';
-				}
-				const tripID = prediction.relationships.trip.data.id;
-				const destination = routePrediction.trips.find(trip => trip.id === tripID).attributes.headsign;
-		%>
-			<li>
-				<span class="arrival-time"><%= getTimeUntilArrival(timePrediction) %></span>
-				<span><%= stopName %> (to <%= destination %>)</span>
-			</li>
-		<% }); %>
-	</ul>
-	<% } %>
-</section>
-<% } %>
+	<% routePredictions.forEach(function(rP){ %>
+	<section class="stop-container">
+		<h1 class="route-name <%= rP.routeClassAttr %>">
+			<% if(rP.routeClassAttr === 'local-bus') { %>
+				<span class="stop-num"><%= rP.routeID.toString() %></span>
+			<% } else { %>
+				<img alt="MBTA T Logo" class="T-logo" src="imgs/T-logo-w-transparent-bk.svg">
+			<% } %>
+			<span><%= rP.routeDisplayName %></span>
+		</h1>
+		<% for(let i = 0; i < rP.predictions.length; i++) { %>
+			<% if(rP.predictions[i].length > 0) { %>
+				<h2 class="direction"><%= rP.directionNames[i] %></h2>
+				<ul>
+					<% rP.predictions[i].forEach(function(prediction) { %>
+						<li>
+							<span class="arrival-time"><%= prediction.timePrediction %></span>
+							<span><%= prediction.stopName %> (to <%= prediction.destination %>)</span>
+						</li>
+					<% }); %>
+				</ul>
+			<% } %>
+		<% } %>
+	</section>
+<% }); %>
 </main>
+
 <% } else { %>
 <main class="flex-and-center">
 	<p class="h1-like center-horizontal reverse-top-margin mobile-margin">Couldn't find "<%= stationName %>". Please try again.</p>
@@ -131,6 +39,7 @@ for(let i = 0; i < routePredictions.length; i++) {
 	</form>
 </main>
 <% } %>
+
 </div>
 </body>
 </html>
