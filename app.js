@@ -1,10 +1,10 @@
 // Requiring packages
 
 const express = require('express');
-const app = express();
 const request = require('request');
 const util = require('util');
 const mongoose = require('mongoose');
+const app = express();
 
 require('dotenv').config({ path: 'variables.env' })
 
@@ -16,7 +16,7 @@ app.use(express.static('public')); // Use public directory when serving assets
 
 // Connect to Database
 
-mongoose.connect(process.env.DATABASE, { 
+mongoose.connect(process.env.DATABASE, {
 	auth: {
 		user: process.env.DB_USER,
 		password: process.env.DB_PASS
