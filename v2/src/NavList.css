@@ -1,0 +1,28 @@
+.NavList {
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  margin: 0;
+}
+
+.NavList__list-item:not(:last-child) {
+  margin-right: 1.3em;
+}
+
+.NavList__link {
+  display: block;
+  padding: .4em 0;
+  color: var(--text-color-dark);
+  font-weight: 400;
+  transition: none;
+}
+
+.NavList__link:hover, .NavList__link:focus {
+  text-decoration: none;
+  color: var(--text-color-dark);
+  font-weight: 700;
+}
+
+.NavList__link--active {
+  font-weight: 700;
+}
