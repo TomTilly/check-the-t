@@ -25,6 +25,7 @@
     width: auto;
     flex-direction: row;
     transform: translate(0);
+    transition: none;
   }
 }
 
