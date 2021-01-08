@@ -1,6 +1,7 @@
 .Navbar {
   box-shadow: 0 1px 13px 0 rgba(118, 118, 118, .17);
   position: relative;
+  background: white;
 }
 
 .Navbar-container {

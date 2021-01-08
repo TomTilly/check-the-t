@@ -7,11 +7,15 @@
   flex-direction: column;
   top: 100%;
   left: 0;
-  right: 0;
+  transform: translateY(-100%);
+  width: 100%;
   background: white;
+  transition: transform .2s ease-in-out;
+  z-index: -1;
 }
 
 .NavList--show {
+  transform: translateY(0);
 }
 
 @media (min-width: 600px){
@@ -20,6 +24,7 @@
     position: static;
     width: auto;
     flex-direction: row;
+    transform: translate(0);
   }
 }
 
