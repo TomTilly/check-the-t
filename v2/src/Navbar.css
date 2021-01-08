@@ -1,13 +1,21 @@
 .Navbar {
-  box-shadow: 0 1px 13px 0 rgba(118, 118, 118, .17);
   position: relative;
   background: white;
+  z-index: 1;
+}
+
+@media (min-width: 600px) {
+  .Navbar {
+    box-shadow: 0 1px 13px 0 rgba(118, 118, 118, .17);
+  }
 }
 
 .Navbar-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: white;
+  z-index: 1;
 }
 
 @media (min-width: 600px){

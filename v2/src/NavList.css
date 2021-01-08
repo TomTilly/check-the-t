@@ -12,6 +12,7 @@
   background: white;
   transition: transform .2s ease-in-out;
   z-index: -1;
+  box-shadow: 0 1px 13px 0 rgba(118, 118, 118, .17);
 }
 
 .NavList--show {
@@ -26,6 +27,7 @@
     flex-direction: row;
     transform: translate(0);
     transition: none;
+    box-shadow: none;
   }
 }
 
