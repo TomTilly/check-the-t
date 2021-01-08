@@ -51,7 +51,13 @@ a:hover, a:focus {
 }
 
 .container {
-  width: 80%;
+  width: 95%;
   margin: 0 auto;
   max-width: 1140px;
+}
+
+@media (min-width: 600px){
+  .container {
+    width: 80%;
+  }
 }
