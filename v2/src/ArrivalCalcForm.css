@@ -1,0 +1,29 @@
+.ArrivalCalcForm {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 2em;
+}
+
+.ArrivalCalcForm__stop {
+  grid-column: 1 / -1;
+}
+
+.ArrivalCalcForm__stop-input, .ArrivalCalcForm__line-input, .ArrivalCalcForm__dir-input{
+  padding: .75em .75em .75em 35px;
+  background-position: 7px center;
+  background-repeat: no-repeat;
+}
+
+.ArrivalCalcForm__stop-input {
+  background-image: url('pin.svg');
+}
+
+.ArrivalCalcForm__line-input {
+  background-image: url('route.svg');
+}
+
+.ArrivalCalcForm__dir-input {
+  background-image: url('dir.svg');
+}
+

@@ -7,10 +7,17 @@
 
 html {
   box-sizing: border-box;
+  font-size: .9rem;
 }
 
 *, *::before, *::after {
   box-sizing: inherit;
+}
+
+@media (min-width: 600px){ 
+  html {
+    font-size: 1rem;
+  }
 }
 
 body {
@@ -26,7 +33,13 @@ body {
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: 1.5rem;
+}
+
+@media (min-width: 600px) {
+  h1 {
+    font-size: 2rem;
+  }
 }
 
 h2 {
@@ -50,6 +63,16 @@ a:hover, a:focus {
   color: var(--light-yellow);
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+:focus {
+  box-shadow: 0 0 0 2px rgba(106, 188, 255, 0.5);
+  outline: none;
+}
+
 .container {
   width: 95%;
   margin: 0 auto;
@@ -61,3 +84,77 @@ a:hover, a:focus {
     width: 80%;
   }
 }
+
+/* Forms */
+
+.form-group {
+  position: relative;
+}
+
+.form-group__control {
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+  border: 1px solid #E9E9E9;
+  padding: .75em;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-family: 'Roboto', sans-serif;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #BEBEBE;
+  width: 100%;
+}
+
+.form-group__control:focus {
+  box-shadow: 0 0 0 2px rgba(106, 188, 255, 0.5), 0 2px 10px rgba(0, 0, 0, 0.07);
+}
+
+.form-group__arrow {
+  position: absolute;
+  width: 30px;
+  height: 100%;
+  right: 0;
+  top: 0;
+  pointer-events: none;
+  background-image: url('caret-down.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+
+
+/* 
+.text-field {
+  position: relative;
+  margin-bottom: 1em;
+  border-radius: var(--border-radius);
+  background: var(--white);
+} */
+
+/* 
+.text-field__input {
+  width: 100%;
+  outline: 0;
+  border: none;
+  font-size: 1rem;
+  padding: 1.1em 0.7em 1em;
+  border-radius: var(--border-radius);
+  color: var(--text-primary-dark);
+}
+
+.text-field__label {
+  position: absolute;
+  font-size: 1rem;
+  transform-origin: top left;
+  transform: translate(0, 0.8em) scale(1);
+  left: 0.7em;
+  cursor: text;
+  transition: transform 0.2s ease;
+  color: var(--text-primary-dark);
+}
+
+.text-field.active label {
+  transform: translateY(0) scale(0.7);
+} */
