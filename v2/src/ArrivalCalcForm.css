@@ -5,6 +5,17 @@
   grid-gap: 2em;
 }
 
+@media (min-width: 800px){
+  .ArrivalCalcForm {
+    grid-gap: 1em;
+  }
+}
+
+@media (min-width: 1000px) {
+  .ArrivalCalcForm {
+  }
+}
+
 .ArrivalCalcForm__form-group:first-child {
   grid-column: 1 / -1;
 }

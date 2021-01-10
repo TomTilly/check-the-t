@@ -1,9 +1,3 @@
 .Hero {
-  padding: 1.5em 0 1em;
-}
-
-@media (min-width: 800px) {
-  .Hero {
-    padding: 3em 0 1em;
-  }
+  padding: 3em 0;
 }

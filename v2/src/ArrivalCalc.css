@@ -12,11 +12,17 @@
 @media (min-width: 800px) {
   .hero {
     grid-gap: 2em;
-    grid-template-columns: 1fr 1.25fr;
+    grid-template-columns: 1.25fr 1fr;
     grid-template-areas: 
       "title img"
       "form  img";
     place-items: start;
+  }
+}
+
+@media (min-width: 1100px) {
+  .hero {
+    grid-template-columns: 1fr 1.25fr;
   }
 }
 
