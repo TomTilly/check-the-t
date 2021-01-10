@@ -5,25 +5,35 @@
   grid-gap: 2em;
 }
 
-.ArrivalCalcForm__stop {
+.ArrivalCalcForm__form-group:first-child {
   grid-column: 1 / -1;
 }
 
-.ArrivalCalcForm__stop-input, .ArrivalCalcForm__line-input, .ArrivalCalcForm__dir-input{
-  padding: .75em .75em .75em 35px;
+.ArrivalCalcForm__form-control{
+  padding: 1.1em .75em .75em 35px;
   background-position: 7px center;
   background-repeat: no-repeat;
 }
 
-.ArrivalCalcForm__stop-input {
+.ArrivalCalcForm__form-group label {
+  padding-left: 35px;
+  left: 0;
+}
+
+.ArrivalCalcForm__form-group.form-group--active label {
+  transform: translateX(12px) scale(0.7);
+
+}
+
+[name="stop"] {
   background-image: url('pin.svg');
 }
 
-.ArrivalCalcForm__line-input {
+[name="line"]{
   background-image: url('route.svg');
 }
 
-.ArrivalCalcForm__dir-input {
+[name="direction"]{
   background-image: url('dir.svg');
 }
 

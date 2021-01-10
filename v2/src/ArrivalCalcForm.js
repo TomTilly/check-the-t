@@ -6,48 +6,127 @@ class ArrivalCalcForm extends Component {
     super(props);
 
     this.state = {
-      stop: '',
-      line: '',
-      dir: '',
+      inputs: [
+        {
+          name: 'stop',
+          label: 'Stop name',
+          type: 'text',
+          value: '',
+          hasFocus: false,
+        },
+        {
+          name: 'line',
+          label: 'Route',
+          type: 'select',
+          value: '',
+          hasFocus: false,
+        },
+        {
+          name: 'direction',
+          label: 'Direction',
+          type: 'select',
+          value: '',
+          hasFocus: false,
+        },
+      ],
     };
+    this.handleFocus = this.handleFocus.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleFocus(e) {
+    this.setState((st) => {
+      const newInputs = st.inputs.map((input) => {
+        if (input.name === e.target.name) {
+          return {
+            ...input,
+            hasFocus: true,
+          };
+        }
+        return input;
+      });
+      return { inputs: newInputs };
+    });
+  }
+
+  handleBlur(e) {
+    this.setState((st) => {
+      const newInputs = st.inputs.map((input) => {
+        if (input.name === e.target.name) {
+          return {
+            ...input,
+            hasFocus: false,
+          };
+        }
+        return input;
+      });
+      return { inputs: newInputs };
+    });
+  }
+
+  handleChange(e) {
+    this.setState((st) => {
+      const newInputs = st.inputs.map((input) => {
+        if (input.name === e.target.name) {
+          return {
+            ...input,
+            value: e.target.value,
+          };
+        }
+        return input;
+      });
+      return { inputs: newInputs };
+    });
   }
 
   render() {
-    const { stop, line, dir } = this.state;
-    return (
-      <form className="ArrivalCalcForm hero__form">
-        <div className="ArrivalCalcForm__stop form-group">
-          <input
-            name="stop"
-            type="text"
-            value={stop}
-            className="ArrivalCalcForm__stop-input form-group__control"
-          />
-        </div>
-        <div className="ArrivalCalcForm__line form-group">
+    const { inputs } = this.state;
+    const inputHtml = inputs.map((input) => {
+      const isActive = input.value || input.hasFocus;
+      let classes = 'ArrivalCalcForm__form-group form-group';
+      classes += isActive ? ' form-group--active' : '';
+      if (input.type === 'text') {
+        return (
+          <div className={classes} key={input.name}>
+            <label className="form-group__label" htmlFor={input.name}>
+              {input.label}
+            </label>
+            <input
+              name={input.name}
+              type="text"
+              value={input.value}
+              className="ArrivalCalcForm__form-control form-group__control"
+              id={input.name}
+              onChange={this.handleChange}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
+            />
+          </div>
+        );
+      }
+      return (
+        <div className={classes} key={input.name}>
+          <label className="form-group__label" htmlFor={input.name}>
+            {input.label}
+          </label>
           <select
-            name="line"
-            value={line}
-            className="ArrivalCalcForm__line-input form-group__control"
+            name={input.name}
+            value={input.value}
+            className="ArrivalCalcForm__form-control form-group__control"
+            id={input.name}
+            onChange={this.handleChange}
+            onFocus={this.handleFocus}
+            onBlur={this.handleBlur}
           >
-            <option value="1...">Val 1</option>
-            <option value="2...">Val 2</option>
+            <option value="default"> </option>
+            <option value="red-line">Red Line</option>
           </select>
           <div className="form-group__arrow" />
         </div>
-        <div className="ArrivalCalcForm__dir form-group">
-          <select
-            name="direction"
-            value={dir}
-            className="ArrivalCalcForm__dir-input form-group__control"
-          >
-            <option value="1...">Val 1</option>
-            <option value="2...">Val 2</option>
-          </select>
-          <div className="form-group__arrow" />
-        </div>
-      </form>
-    );
+      );
+    });
+    return <form className="ArrivalCalcForm hero__form">{inputHtml}</form>;
   }
 }
 

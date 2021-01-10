@@ -26,7 +26,29 @@
     "rules": {
       "react/static-property-placement": 1,
       "react/prop-types": 1,
-      "react/no-unused-state": 1
+      "react/no-unused-state": 1,
+      "jsx-a11y/label-has-associated-control": [
+        "error",
+        {
+          "required": {
+            "some": [
+              "nesting",
+              "id"
+            ]
+          }
+        }
+      ],
+      "jsx-a11y/label-has-for": [
+        "error",
+        {
+          "required": {
+            "some": [
+              "nesting",
+              "id"
+            ]
+          }
+        }
+      ]
     }
   },
   "browserslist": {
