@@ -1,0 +1,49 @@
+.Snackbar {
+  --error-color: #cc554c;
+
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1em 2em;
+  background: #323232;
+  color: var(--error-color);
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  border-radius: 5px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.2);
+  transition: opacity .2s ease-in-out;
+}
+
+.Snackbar__icon {
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.Snackbar__message {
+  margin-left: .75em;
+}
+
+.Snackbar__btn {
+  margin-left: 50px;
+  color: var(--error-color);
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  padding: 0;
+  cursor: pointer;
+}
+
+.Snackbar__btn:hover, .Snackbar__btn:focus {
+  background: #464646;
+}
+
+.Snackbar__btn-close-icon {
+  width: 2.3em;
+  height: 2.3em;
+}
+

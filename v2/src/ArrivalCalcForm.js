@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import './ArrivalCalcForm.css';
+import Snackbar from './Snackbar';
+
+const API_BASE_URL = 'https://api-v3.mbta.com/';
 
 class ArrivalCalcForm extends Component {
   constructor(props) {
@@ -29,10 +32,13 @@ class ArrivalCalcForm extends Component {
           hasFocus: false,
         },
       ],
+      isSnackbarOpen: false,
+      snackbarMessage: 'test',
     };
     this.handleFocus = this.handleFocus.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.closeSnackbar = this.closeSnackbar.bind(this);
   }
 
   handleFocus(e) {
@@ -80,8 +86,12 @@ class ArrivalCalcForm extends Component {
     });
   }
 
+  closeSnackbar() {
+    this.setState({ isSnackbarOpen: false });
+  }
+
   render() {
-    const { inputs } = this.state;
+    const { inputs, snackbarMessage, isSnackbarOpen } = this.state;
     const inputHtml = inputs.map((input) => {
       const isActive = input.value || input.hasFocus;
       let classes = 'ArrivalCalcForm__form-group form-group';
@@ -126,7 +136,16 @@ class ArrivalCalcForm extends Component {
         </div>
       );
     });
-    return <form className="ArrivalCalcForm hero__form">{inputHtml}</form>;
+    return (
+      <div style={{ width: '100%' }}>
+        <form className="ArrivalCalcForm hero__form">{inputHtml}</form>
+        <Snackbar
+          message={snackbarMessage}
+          isOpen={isSnackbarOpen}
+          close={this.closeSnackbar}
+        />
+      </div>
+    );
   }
 }
 
