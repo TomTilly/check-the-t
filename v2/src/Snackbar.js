@@ -5,7 +5,7 @@ import { ReactComponent as X } from './x.svg';
 
 class Snackbar extends Component {
   static defaultProps = {
-    autoHideDuration: 5000,
+    autoHideDuration: 10000,
     message: 'Default message',
   };
 
@@ -13,7 +13,7 @@ class Snackbar extends Component {
     super(props);
 
     this.state = {
-      shouldRender: props.isOpen,
+      isOpen: props.isOpen,
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -21,53 +21,48 @@ class Snackbar extends Component {
   }
 
   componentDidMount() {
-    const { close, autoHideDuration } = this.props;
-    this.intervalID = setTimeout(() => {
-      console.log('timeout');
-      close();
-    }, autoHideDuration);
-  }
-
-  componentDidUpdate(prevProps) {
-    const { isOpen } = this.props;
-    if (prevProps.isOpen !== isOpen && isOpen)
-      this.setState({ shouldRender: true }); // eslint-disable-line
+    const { autoHideDuration, autoHide } = this.props;
+    if (autoHide) {
+      this.intervalID = setTimeout(() => {
+        this.setState({ isOpen: false });
+      }, autoHideDuration);
+    }
   }
 
   handleClick() {
-    const { close } = this.props;
-    clearTimeout(this.intervalID);
-    close();
+    this.setState({ isOpen: false });
   }
 
   handleAnimationEnd() {
-    const { isOpen } = this.props;
+    const { isOpen } = this.state;
+    const { close } = this.props;
 
-    if (!isOpen) this.setState({ shouldRender: false });
+    if (!isOpen) {
+      if (this.intervalID) clearTimeout(this.intervalID);
+      close();
+    }
   }
 
   render() {
-    const { close, message, isOpen } = this.props;
-    const { shouldRender } = this.state;
+    const { message } = this.props;
+    const { isOpen } = this.state;
 
     return (
-      shouldRender && (
-        <div
-          className={`Snackbar ${isOpen ? 'fadeIn' : 'fadeOut'}`}
-          onAnimationEnd={this.handleAnimationEnd}
+      <div
+        className={`Snackbar ${isOpen ? 'fadeIn' : 'fadeOut'}`}
+        onAnimationEnd={this.handleAnimationEnd}
+      >
+        <Exclamation className="Snackbar__icon" />
+        <span className="Snackbar__message">{message}</span>
+        <button
+          className="Snackbar__btn"
+          aria-label="Close notification"
+          type="button"
+          onClick={this.handleClick}
         >
-          <Exclamation className="Snackbar__icon" />
-          <span className="Snackbar__message">{message}</span>
-          <button
-            className="Snackbar__btn"
-            aria-label="Close notification"
-            type="button"
-            onClick={this.handleClick}
-          >
-            <X className="Snackbar__btn-close-icon" />
-          </button>
-        </div>
-      )
+          <X className="Snackbar__btn-close-icon" />
+        </button>
+      </div>
     );
   }
 }

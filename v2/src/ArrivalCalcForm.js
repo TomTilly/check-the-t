@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import './ArrivalCalcForm.css';
 import Snackbar from './Snackbar';
-
-const API_BASE_URL = 'https://api-v3.mbta.com/';
+import { getStopNames } from './helpers';
 
 class ArrivalCalcForm extends Component {
   constructor(props) {
@@ -32,13 +31,41 @@ class ArrivalCalcForm extends Component {
           hasFocus: false,
         },
       ],
-      isSnackbarOpen: false,
+      shouldRenderSnackbar: false,
       snackbarMessage: 'test',
     };
     this.handleFocus = this.handleFocus.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.closeSnackbar = this.closeSnackbar.bind(this);
+  }
+
+  componentDidMount() {
+    getStopNames()
+      .then((names) => {
+        this.searchSuggestions = names;
+        console.log(names);
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log('in .catch');
+        console.log(err.message);
+        this.setState({
+          shouldRenderSnackbar: true,
+          snackbarMessage: (
+            <div>
+              {err.message} - please try again later or {` `}
+              <a
+                href="https://github.com/TomTilly/check-the-t/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                report the issue on Github
+              </a>
+            </div>
+          ),
+        });
+      });
   }
 
   handleFocus(e) {
@@ -87,11 +114,11 @@ class ArrivalCalcForm extends Component {
   }
 
   closeSnackbar() {
-    this.setState({ isSnackbarOpen: false });
+    this.setState({ shouldRenderSnackbar: false });
   }
 
   render() {
-    const { inputs, snackbarMessage, isSnackbarOpen } = this.state;
+    const { inputs, snackbarMessage, shouldRenderSnackbar } = this.state;
     const inputHtml = inputs.map((input) => {
       const isActive = input.value || input.hasFocus;
       let classes = 'ArrivalCalcForm__form-group form-group';
@@ -139,11 +166,14 @@ class ArrivalCalcForm extends Component {
     return (
       <div style={{ width: '100%' }}>
         <form className="ArrivalCalcForm hero__form">{inputHtml}</form>
-        <Snackbar
-          message={snackbarMessage}
-          isOpen={isSnackbarOpen}
-          close={this.closeSnackbar}
-        />
+        {shouldRenderSnackbar && (
+          <Snackbar
+            message={snackbarMessage}
+            isOpen={shouldRenderSnackbar}
+            close={this.closeSnackbar}
+            autoHide={false}
+          />
+        )}
       </div>
     );
   }

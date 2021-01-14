@@ -6,7 +6,6 @@ import ArrivalCalc from './ArrivalCalc';
 import About from './About';
 import NotFound from './NotFound';
 import MainWrapper from './MainWrapper';
-import Snackbar from './Snackbar';
 
 class App extends Component {
   render() {
