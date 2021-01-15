@@ -50,6 +50,7 @@ class ArrivalCalcForm extends Component {
         console.error(err);
         console.log('in .catch');
         console.log(err.message);
+        console.log('update');
         this.setState({
           shouldRenderSnackbar: true,
           snackbarMessage: (
