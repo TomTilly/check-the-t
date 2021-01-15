@@ -15,7 +15,7 @@ class App extends Component {
         <Switch>
           <Route
             exact
-            path="/check-the-t"
+            path="/"
             render={() => (
               <MainWrapper fullWidth>
                 <ArrivalCalc />
@@ -24,7 +24,7 @@ class App extends Component {
           />
           <Route
             exact
-            path="/check-the-t/about"
+            path="/about"
             render={() => (
               <MainWrapper background="#F2F9FB">
                 <About />
