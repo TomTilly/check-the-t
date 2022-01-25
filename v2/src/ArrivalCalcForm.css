@@ -43,3 +43,21 @@
   background-image: url('dir.svg');
 }
 
+.ArrivalCalcForm__suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  z-index: 5;
+  border-radius: 5px;
+}
+
+.ArrivalCalcForm__suggestion {
+  padding: .5em 35px;
+  cursor: pointer;
+}
+
+.ArrivalCalcForm__suggestion:hover, .ArrivalCalcForm__suggestion:focus {
+  background: #f8f8f8;
+}

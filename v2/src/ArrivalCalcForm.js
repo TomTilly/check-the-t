@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './ArrivalCalcForm.css';
 import Snackbar from './Snackbar';
-import { getStopNames } from './helpers';
+import { loadStopNamesIntoLocalStorage, getSearchSuggestions } from './helpers';
+import Trie from './trie';
 
 class ArrivalCalcForm extends Component {
   constructor(props) {
@@ -15,6 +16,7 @@ class ArrivalCalcForm extends Component {
           type: 'text',
           value: '',
           hasFocus: false,
+          suggestions: [],
         },
         {
           name: 'line',
@@ -32,8 +34,10 @@ class ArrivalCalcForm extends Component {
         },
       ],
       shouldRenderSnackbar: false,
-      snackbarMessage: 'test',
+      snackbarMessage: '',
+      areStopNamesLoaded: false,
     };
+
     this.handleFocus = this.handleFocus.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -41,16 +45,19 @@ class ArrivalCalcForm extends Component {
   }
 
   componentDidMount() {
-    getStopNames()
-      .then((names) => {
-        this.searchSuggestions = names;
-        console.log(names);
+    loadStopNamesIntoLocalStorage()
+      .then(() => {
+        this.setState({ areStopNamesLoaded: true });
+        this.stopTrie = new Trie();
+        const stops = JSON.parse(localStorage.getItem('stops'));
+        const stopNames = stops.map((stop) => stop.name);
+        this.stopTrie.insertMany(stopNames);
+        console.log(this.stopTrie);
       })
       .catch((err) => {
-        console.error(err);
         console.log('in .catch');
+        console.error(err);
         console.log(err.message);
-        console.log('update');
         this.setState({
           shouldRenderSnackbar: true,
           snackbarMessage: (
@@ -103,13 +110,26 @@ class ArrivalCalcForm extends Component {
     this.setState((st) => {
       const newInputs = st.inputs.map((input) => {
         if (input.name === e.target.name) {
-          return {
-            ...input,
-            value: e.target.value,
-          };
+          const searchValue = e.target.value;
+          const newInput = { ...input, value: searchValue };
+          if (st.areStopNamesLoaded) {
+            const suggestions = getSearchSuggestions(
+              searchValue,
+              this.stopTrie
+            );
+            newInput.suggestions = suggestions.map((suggestion) => (
+              <div className="form-group__suggestion" key={suggestion}>
+                {suggestion}
+              </div>
+            ));
+          }
+
+          return newInput;
         }
+
         return input;
       });
+
       return { inputs: newInputs };
     });
   }
@@ -140,6 +160,9 @@ class ArrivalCalcForm extends Component {
               onFocus={this.handleFocus}
               onBlur={this.handleBlur}
             />
+            {input.suggestions.length > 0 && (
+              <div className="form-group__suggestions">{input.suggestions}</div>
+            )}
           </div>
         );
       }
